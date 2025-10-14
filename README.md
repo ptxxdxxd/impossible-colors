@@ -1,6 +1,5 @@
 # Impossible Colors – Optical Illusions in CSS/JS
 
-**Live Demo:** (Add your GitHub Pages link here)
 
 Impossible Colors is a creative coding project demonstrating vivid, forbidden, and mathematically "impossible" colors using CSS animations and original color science techniques.
 
@@ -27,13 +26,15 @@ Impossible colors are color perceptions that cannot exist in normal viewing, suc
 - HTML5 / CSS3 (animated gradients)
 - JavaScript (UI logic, localStorage)
 
-## Screenshots
-
-(Add screenshots or screen-captures here)
 
 ## License
 
 MIT License
+
+Copyright (c) 2025 (PTxxDxxD)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy ...
+
 
 ## Credits
 
