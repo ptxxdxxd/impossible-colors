@@ -17,9 +17,10 @@ Impossible colors are color perceptions that cannot exist in normal viewing, suc
 
 ## How to Use
 
-1. Open `index.html` in your browser.
-2. Click around to discover impossible colors and illusions.
-3. Favorite, copy names, enjoy fullscreen mode!
+1. save impossiblecolorsv2.html 
+2. Open `impossiblecolorsv2.html` in your browser.
+3. Click around to discover impossible colors and illusions.
+4. Favorite, copy names, enjoy fullscreen mode!
 
 ## Technologies
 
