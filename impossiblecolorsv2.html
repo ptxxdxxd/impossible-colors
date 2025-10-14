@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>P.T's impossible colors</title>
+  <style>
+    :root {
+      --bg-main: #131316;
+      --pink: #fdc5e7;
+      --seafoam: #a9ffe4;
+      --white: #fff;
+      --card-bg: rgba(253,197,231,0.08);
+      --card-border: rgba(169,255,228,0.20);
+      --accent: #a9ffe4;
+      --text-main: #fff;
+      --nav-bg: #212126;
+      --shadow: 0 15px 35px rgba(150, 255, 220, 0.23);
+      --fav: #ff70a6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      background: var(--bg-main);
+      font-family: 'Courier New', monospace; 
+      color: var(--text-main); 
+      min-height: 100vh; 
+      padding: 20px; 
+    }
+    .container { max-width: 1400px; margin: 0 auto; text-align: center; }
+    h1 { 
+      font-size: 2.5rem; 
+      margin-bottom: 0.5rem; 
+      color: var(--pink); 
+      text-shadow: 0 0 20px var(--seafoam); 
+      letter-spacing: 2px;
+    }
+    .subtitle { margin-bottom: 1.5rem; color: var(--seafoam); font-size: 1.1rem; }
+    nav.controls {
+      background: var(--nav-bg);
+      border-radius: 16px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 16px rgba(253,197,231,0.11);
+    }
+    .controls { margin: 25px 0; text-align: center; }
+    .btn { 
+      display: inline-block; 
+      padding: 12px 20px; 
+      margin: 6px; 
+      border: none; 
+      border-radius: 25px; 
+      background: var(--pink); 
+      color: var(--bg-main); 
+      cursor: pointer; 
+      text-transform: uppercase; 
+      font-size: 0.85rem; 
+      font-weight: bold;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      box-shadow: 0 1px 7px 0 var(--seafoam);
+    }
+    .btn:hover { background: var(--seafoam); color: var(--bg-main);}
+    .btn.active { background: var(--seafoam); color: var(--bg-main); }
+    .page { display: none; }
+    .page.active { display: block; }
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+      gap: 20px; 
+      margin: 30px 0; 
+      padding: 10px; 
+    }
+    .card { 
+      background: var(--card-bg); 
+      border: 2px solid var(--card-border); 
+      border-radius: 18px; 
+      padding: 20px; 
+      cursor: pointer; 
+      box-shadow: var(--shadow);
+      position: relative;
+      transition: all 0.3s ease; 
+    }
+    .card:hover { 
+      transform: translateY(-8px) scale(1.02); 
+      border-color: var(--seafoam);
+      box-shadow: 0 15px 35px var(--card-border);
+    }
+    .swatch { 
+      width: 200px; 
+      height: 200px; 
+      border-radius: 50%; 
+      margin: 0 auto 15px; 
+      border: 3px solid var(--seafoam); 
+      position: relative;
+      overflow: hidden;
+    }
+    .name { font-weight: bold; margin: 12px 0 8px; font-size: 1.1rem; color: var(--pink);}
+    .desc { font-size: 0.93rem; color: var(--seafoam); line-height: 1.4; margin-bottom: 8px; }
+    .category { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+    .fav-btn {
+      position: absolute; top: 20px; right: 28px;
+      background: none; border: none; cursor: pointer;
+      font-size: 1.65rem; color: var(--fav);
+      transition: color 0.2s;
+    }
+    .fav-btn.faved { color: #ff2e8c; text-shadow: 0 0 12px var(--fav);}
+    .copy-btn {
+      position: absolute; top: 20px; left: 28px;
+      background: var(--seafoam); border: none; color: var(--bg-main);
+      padding: 5px 13px; border-radius: 9px;
+      font-size: 0.83rem; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:active { background: var(--pink); color: var(--bg-main);}
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.08); opacity: 1; } }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 20px currentColor; } 50% { box-shadow: 0 0 40px currentColor, 0 0 60px currentColor; } }
+    .fullscreen-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(19,19,22, 0.98);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      flex-direction: column;
+    }
+    .fullscreen-overlay.active { display: flex; }
+    .fullscreen-color {
+      width: 80vw;
+      height: 80vh;
+      max-width: 900px;
+      max-height: 700px;
+      border-radius: 25px;
+      position: relative;
+      border: 4px solid var(--seafoam);
+    }
+    .fullscreen-info {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(253,197,231, 0.13);
+      padding: 25px 35px;
+      border-radius: 18px;
+      text-align: center;
+      max-width: 700px;
+      border: 1px solid var(--seafoam);
+      color: var(--pink);
+    }
+    .close-btn {
+      position: absolute;
+      top: 30px; right: 30px;
+      background: var(--pink);
+      color: var(--bg-main);
+      border: none;
+      padding: 15px 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* --- ALL COLOR CLASSES --- */
+    /* Stygian colors */
+    .stygian-blue { background: radial-gradient(circle, #000088 0%, #000 50%, #0000ff 100%); animation: pulse 3s ease-in-out infinite; }
+    .stygian-violet { background: radial-gradient(circle, #3a0077 0%, #000 55%, #7a2cff 100%); animation: pulse 3.2s ease-in-out infinite; }
+    .stygian-green { background: radial-gradient(circle, #005500 0%, #000 50%, #00aa00 100%); animation: pulse 3.1s ease-in-out infinite; }
+    .stygian-red { background: radial-gradient(circle, #550000 0%, #000 45%, #aa0000 100%); animation: pulse 2.9s ease-in-out infinite; }
+    .stygian-orange { background: radial-gradient(circle, #663300 0%, #000 48%, #ff6600 100%); animation: pulse 3.3s ease-in-out infinite; }
+    .stygian-yellow { background: radial-gradient(circle, #555500 0%, #000 52%, #ffff00 100%); animation: pulse 3.4s ease-in-out infinite; }
+    .stygian-cyan { background: radial-gradient(circle, #005555 0%, #000 49%, #00ffff 100%); animation: pulse 3.15s ease-in-out infinite; }
+    .stygian-magenta { background: radial-gradient(circle, #550055 0%, #000 51%, #ff00ff 100%); animation: pulse 2.85s ease-in-out infinite; }
+    .stygian-teal { background: radial-gradient(circle, #004d4d 0%, #000 55%, #00ffd2 100%); animation: pulse 3.3s ease-in-out infinite; }
+    .impossible-indigo { background: radial-gradient(circle, #4b0082 5%, #000 60%, #8a2be2 100%); animation: pulse 3.1s ease-in-out infinite;}
+    .blacklight-blue { background: radial-gradient(circle, #0ff 2%, #000 65%, #00f 100%); animation: pulse 3.25s ease-in-out infinite;}
+
+    /* Self-luminous colors */
+    .self-luminous-red { background: radial-gradient(circle, #ff0000 0%, #ff6666 30%, #ff0000 60%, #ffcccc 100%); animation: glow 2s ease-in-out infinite, pulse 2s ease-in-out infinite; color: #ff0000; }
+    .self-luminous-blue { background: radial-gradient(circle, #0090ff 0%, #66bfff 35%, #0090ff 65%, #cfe9ff 100%); animation: glow 2.1s ease-in-out infinite, pulse 2.1s ease-in-out infinite; color: #0090ff; }
+    .self-luminous-green { background: radial-gradient(circle, #00c000 0%, #66ff66 35%, #00c000 65%, #d6ffd6 100%); animation: glow 2.2s ease-in-out infinite, pulse 2.2s ease-in-out infinite; color: #00c000; }
+    .self-luminous-yellow { background: radial-gradient(circle, #ffff00 0%, #ffff88 35%, #ffff00 65%, #ffffcc 100%); animation: glow 1.9s ease-in-out infinite, pulse 1.9s ease-in-out infinite; color: #ffff00; }
+    .self-luminous-orange { background: radial-gradient(circle, #ffae42 0%, #ffd699 35%, #ffae42 65%, #fff1e0 100%); animation: glow 2.3s ease-in-out infinite, pulse 2.3s ease-in-out infinite; color: #ffae42;}
+    .impossible-mint { background: radial-gradient(circle, #a9ffe4 0%, #fff 60%, #a9ffe4 100%); animation: glow 2.5s ease-in-out infinite, pulse 2.5s ease-in-out infinite; color: #a9ffe4;}
+    .superluminal-red { background: radial-gradient(circle, #ff2e2e 0%, #fff 40%, #ff2e2e 100%); animation: glow 2.6s ease-in-out infinite, pulse 2.6s ease-in-out infinite; color: #ff2e2e;}
+
+    /* Hyperbolic colors */
+    .hyperbolic-orange { background: conic-gradient(from 0deg, #ff4500, #ff8c00, #ffd700, #ff4500); animation: spin 4s linear infinite; }
+    .hyperbolic-green { background: conic-gradient(from 0deg, #00ff66, #00ff00, #00cc44, #00ff66); animation: spin 4.5s linear infinite reverse; }
+    .hyperbolic-cyan { background: conic-gradient(from 0deg, #00ffff, #00bfff, #00ffff); animation: spin 3.8s linear infinite; }
+    .hyperbolic-magenta { background: conic-gradient(from 0deg, #ff00ff, #ff66ff, #ff00ff); animation: spin 4.2s linear infinite; }
+    .hyperbolic-red { background: conic-gradient(from 0deg, #ff0000, #ff4444, #ff0000); animation: spin 3.6s linear infinite reverse; }
+    .hyperbolic-blue { background: conic-gradient(from 0deg, #0000ff, #4444ff, #0000ff); animation: spin 4.1s linear infinite; }
+    .hyperbolic-pink { background: conic-gradient(from 0deg, #ff70a6, #fdc5e7, #ff70a6); animation: spin 3.6s linear infinite; }
+    .infra-magenta { background: conic-gradient(from 0deg, #ff00ff, #000, #ff00ff); animation: spin 3.7s linear infinite;}
+    .quantum-teal { background: conic-gradient(from 0deg, #1de9b6, #a9ffe4, #1de9b6); animation: spin 3.5s linear infinite reverse;}
+    .anti-orange { background: conic-gradient(from 0deg, #ff8c00, #000, #ff8c00); animation: spin 4s linear infinite;}
+
+    /* Opponent pair colors (ALL conic, spinning patterns, ultra-fine stripes) */
+    .reddish-green {
+      background: repeating-conic-gradient(from 0deg, #ff0000 0deg 2deg, #00ff00 2deg 4deg);
+      animation: spin 3s linear infinite;
+    }
+    .bluish-yellow {
+      background: repeating-conic-gradient(from 0deg, #0066ff 0deg 2deg, #ffff00 2deg 4deg);
+      animation: spin 3s linear infinite;
+    }
+    .yellowish-purple {
+      background: repeating-conic-gradient(from 0deg, #ffff00 0deg 2deg, #800080 2deg 4deg);
+      animation: spin 3s linear infinite;
+    }
+    .greenish-red {
+      background: repeating-conic-gradient(from 0deg, #00ff00 0deg 2deg, #ff0000 2deg 4deg);
+      animation: spin 3s linear infinite;
+    }
+    .orangish-blue {
+      background: repeating-conic-gradient(from 0deg, #ff4500 0deg 2deg, #0000ff 2deg 4deg);
+      animation: spin 3s linear infinite;
+    }
+    .violetish-yellow {
+      background: repeating-conic-gradient(from 0deg, #8800ff 0deg 2deg, #ffff00 2deg 4deg);
+      animation: spin 3s linear infinite;
+    }
+    .cyanish-orange {
+      background: repeating-conic-gradient(from 0deg, #00ffff 0deg 2deg, #ff8c00 2deg 4deg);
+      animation: spin 3s linear infinite;
+    }
+    .pinkish-green {
+      background: repeating-conic-gradient(from 0deg, #ff1493 0deg 2deg, #00ff00 2deg 4deg);
+      animation: spin 3s linear infinite;
+    }
+
+    /* Mathematical colors */
+    .hyper-green { background: conic-gradient(from 45deg, #00ff00, #44ff44, #00ff88, #00ff00); animation: spin 3.5s linear infinite reverse; }
+    .negative-red { background: conic-gradient(from 0deg, #ffff00, #ff00ff, #00ffff, #ffff00); animation: spin 3.2s linear infinite; }
+    .imaginary-cyan { background: radial-gradient(circle, #00ffff 30%, rgba(0,255,255,0.3) 40%, #00ffff 60%); animation: pulse 2.5s ease-in-out infinite; }
+    .quantum-orange { background: conic-gradient(from 180deg, #ff4500, #ff8800, #ffaa00, #ff4500); animation: spin 3.3s linear infinite; }
+    .negative-yellow { background: conic-gradient(from 0deg, #000 0deg 50deg, #ffff00 50deg 100deg, #000 100deg 150deg, #ffff00 150deg 200deg, #000 200deg 250deg, #ffff00 250deg 300deg, #000 300deg 360deg); animation: spin 3.5s linear infinite;}
+
+    /* Composite colors */
+    .chromatic-gray { background: conic-gradient(from 0deg, #ff00ff, #ffff00, #00ffff, #ff00ff); animation: spin 2.5s linear infinite; }
+    .vantablack-white { background: repeating-conic-gradient(from 0deg, #000 0deg 2deg, #fff 2deg 4deg); animation: spin 5s linear infinite; }
+    .prismatic-null { background: conic-gradient(from 45deg, #00ff00, #ff0000, #0000ff, #ffff00, #00ff00); animation: spin 4s linear infinite reverse; }
+    .quantum-violet { background: radial-gradient(ellipse at center, rgba(148,0,211,0.9) 0%, rgba(75,0,130,0.6) 30%, rgba(138,43,226,0.4) 60%, rgba(148,0,211,0.1) 100%); animation: pulse 2.7s ease-in-out infinite; }
+
+    /* Pastel/Seafoam specials */
+    .pastel-pistachio { background: radial-gradient(circle, #caffd0 0%, #a9ffe4 80%); animation: pulse 2.9s ease-in-out infinite;}
+    .seafoam-vortex { background: conic-gradient(from 0deg, #a9ffe4, #89ffc7, #a9ffe4); animation: spin 3.4s linear infinite reverse;}
+  </style>
+  <!-- rest of file unchanged from your previous working setup -->
+</head>
+<body>
+  <div class="container">
+    <h1>P.T's impossible colors</h1>
+    <p class="subtitle">Vivid, forbidden, and mathematically impossible colors – now in pastel pink &amp; seafoam!</p>
+    <nav class="controls">
+      <button class="btn active" onclick="showPage('generator', event)">Random Mix</button>
+      <button class="btn" onclick="showPage('opponent', event)">Opponent Colors</button>
+      <button class="btn" onclick="showPage('hyperbolic', event)">Spinning Colors</button>
+      <button class="btn" onclick="showPage('complete', event)">All Colors</button>
+      <button class="btn" onclick="showPage('favorites', event)">Favorites <span id="favCount"></span></button>
+      <button class="btn" onclick="surpriseMe()">Surprise Me!</button>
+    </nav>
+
+    <main>
+      <section id="generator" class="page active">
+        <div class="controls">
+          <button class="btn" onclick="generateRandom()">Generate Mix</button>
+          <button class="btn" onclick="showOpponents()">Show All Opponents</button>
+        </div>
+        <div class="grid" id="gridGenerator"></div>
+      </section>
+
+      <section id="opponent" class="page">
+        <p class="subtitle">Forbidden colors using alternating opponent patterns</p>
+        <div class="grid" id="gridOpponent"></div>
+      </section>
+
+      <section id="hyperbolic" class="page">
+        <p class="subtitle">Supersaturated colors with spinning motion</p>
+        <div class="grid" id="gridHyperbolic"></div>
+      </section>
+
+      <section id="complete" class="page">
+        <p class="subtitle">Complete collection - Click any color for fullscreen</p>
+        <div class="grid" id="gridComplete"></div>
+      </section>
+
+      <section id="favorites" class="page">
+        <p class="subtitle">Your Favorite Impossible Colors</p>
+        <div class="grid" id="gridFavorites"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="fullscreen-overlay" id="fullscreenOverlay">
+    <div class="fullscreen-color" id="fullscreenColor"></div>
+    <div class="fullscreen-info" id="fullscreenInfo">
+      <h2 id="fullscreenTitle"></h2>
+      <p id="fullscreenDesc"></p>
+      <p id="fullscreenCategory"></p>
+      <p><em>Press ESC or click × to exit fullscreen</em></p>
+    </div>
+    <button class="close-btn" onclick="closeFullscreen()">×</button>
+  </div>
+
+  <script>
+    // (same JS as previous version)
+    // --- Impossible Colors Expanded ---
+    var COLORS = [
+      {cls:'stygian-blue', name:'Stygian Blue', desc:'Blue darker than black yet impossibly saturated', cat:'Stygian'},
+      {cls:'stygian-violet', name:'Stygian Violet', desc:'Violet below black while remaining vivid', cat:'Stygian'},
+      {cls:'stygian-green', name:'Stygian Green', desc:'Green afterimage on black background', cat:'Stygian'},
+      {cls:'stygian-red', name:'Stygian Red', desc:'Red darker than black with saturation', cat:'Stygian'},
+      {cls:'stygian-orange', name:'Stygian Orange', desc:'Orange darker than black impossibly', cat:'Stygian'},
+      {cls:'stygian-yellow', name:'Stygian Yellow', desc:'Yellow black yet brilliantly saturated', cat:'Stygian'},
+      {cls:'stygian-cyan', name:'Stygian Cyan', desc:'Cyan darker than black while vivid', cat:'Stygian'},
+      {cls:'stygian-magenta', name:'Stygian Magenta', desc:'Magenta with darkness and impossible brightness', cat:'Stygian'},
+      {cls:'stygian-teal', name:'Stygian Teal', desc:'Teal afterimage on black: a cold, impossible hue', cat:'Stygian'},
+      {cls:'impossible-indigo', name:'Impossible Indigo', desc:'Indigo so deep, it pierces black itself', cat:'Stygian'},
+      {cls:'blacklight-blue', name:'Blacklight Blue', desc:'Electric cyan with blacklight intensity', cat:'Stygian'},
+
+      {cls:'self-luminous-red', name:'Self-Luminous Red', desc:'Red appearing to glow against white backgrounds', cat:'Self-Luminous'},
+      {cls:'self-luminous-blue', name:'Self-Luminous Blue', desc:'Blue emissive after prolonged adaptation', cat:'Self-Luminous'},
+      {cls:'self-luminous-green', name:'Self-Luminous Green', desc:'Green with apparent inner light source', cat:'Self-Luminous'},
+      {cls:'self-luminous-yellow', name:'Self-Luminous Yellow', desc:'Yellow glowing brighter than white', cat:'Self-Luminous'},
+      {cls:'self-luminous-orange', name:'Self-Luminous Orange', desc:'Orange glowing as if self-lit with pastel halo', cat:'Self-Luminous'},
+      {cls:'impossible-mint', name:'Impossible Mint', desc:'Self-luminous mint, glowing with impossible vibrance', cat:'Self-Luminous'},
+      {cls:'superluminal-red', name:'Superluminal Red', desc:'Red so bright it seems faster than light', cat:'Self-Luminous'},
+
+      {cls:'hyperbolic-orange', name:'Hyperbolic Orange', desc:'More orange than physically possible with spinning gradients', cat:'Hyperbolic'},
+      {cls:'hyperbolic-green', name:'Hyperbolic Green', desc:'Greener than green via impossible contrast enhancement', cat:'Hyperbolic'},
+      {cls:'hyperbolic-cyan', name:'Hyperbolic Cyan', desc:'Cyan intensified beyond physical saturation limits', cat:'Hyperbolic'},
+      {cls:'hyperbolic-magenta', name:'Hyperbolic Magenta', desc:'Magenta with impossible purity and saturation', cat:'Hyperbolic'},
+      {cls:'hyperbolic-red', name:'Hyperbolic Red', desc:'Red beyond physical saturation limits with spinning motion', cat:'Hyperbolic'},
+      {cls:'hyperbolic-blue', name:'Hyperbolic Blue', desc:'Blue exceeding normal color gamut boundaries', cat:'Hyperbolic'},
+      {cls:'hyperbolic-pink', name:'Hyperbolic Pink', desc:'Pink with pastel vibrance, spinning in the mind\'s eye', cat:'Hyperbolic'},
+      {cls:'infra-magenta', name:'Infra-magenta', desc:'Magenta intensified to near-infrared', cat:'Hyperbolic'},
+      {cls:'quantum-teal', name:'Quantum Teal', desc:'Teal that flickers between possible and impossible', cat:'Hyperbolic'},
+      {cls:'anti-orange', name:'Anti-orange', desc:'Orange that spins into nonexistence', cat:'Hyperbolic'},
+
+      {cls:'reddish-green', name:'Reddish Green', desc:'Red-green opponent stripes creating impossible color conflict', cat:'Opponent'},
+      {cls:'bluish-yellow', name:'Bluish Yellow', desc:'Blue-yellow alternating pattern with spinning motion', cat:'Opponent'},
+      {cls:'yellowish-purple', name:'Yellowish Purple', desc:'Fine yellow-purple stripes creating rapid visual conflict', cat:'Opponent'},
+      {cls:'greenish-red', name:'Greenish Red', desc:'Green-red alternating bands with opponent tension', cat:'Opponent'},
+      {cls:'orangish-blue', name:'Orangish Blue', desc:'Orange-blue diagonal stripes creating warm-cool conflict', cat:'Opponent'},
+      {cls:'violetish-yellow', name:'Violetish Yellow', desc:'Violet-yellow alternating pattern with high contrast', cat:'Opponent'},
+      {cls:'cyanish-orange', name:'Cyanish Orange', desc:'Cyan-orange alternating stripes with cool-warm opposition', cat:'Opponent'},
+      {cls:'pinkish-green', name:'Pinkish Green', desc:'Pink-green diagonal pattern creating color opponent tension', cat:'Opponent'},
+
+      {cls:'hyper-green', name:'Hyper Green', desc:'Mathematical color existing outside physical spectrum', cat:'Mathematical'},
+      {cls:'negative-red', name:'Negative Red', desc:'Inverse color space representation with spin', cat:'Mathematical'},
+      {cls:'imaginary-cyan', name:'Imaginary Cyan', desc:'Color existing only in mathematical descriptions', cat:'Mathematical'},
+      {cls:'quantum-orange', name:'Quantum Orange', desc:'Orange in quantum superposition states', cat:'Mathematical'},
+      {cls:'negative-yellow', name:'Negative Yellow', desc:'Negative of yellow, flickering between presence and absence', cat:'Mathematical'},
+
+      {cls:'chromatic-gray', name:'Chromatic Gray', desc:'Neutral gray with chroma cycling and rotation', cat:'Composite'},
+      {cls:'vantablack-white', name:'Vantablack-White', desc:'Simultaneous absolute black and white conic pattern', cat:'Composite'},
+      {cls:'prismatic-null', name:'Prismatic Null', desc:'All hues and no hue paradox with reverse spin', cat:'Composite'},
+      {cls:'quantum-violet', name:'Quantum Violet', desc:'Pulsing violet field with quantum flux illusion', cat:'Composite'},
+
+      {cls:'pastel-pistachio', name:'Pastel Pistachio', desc:'Soft pistachio green, mathematically vivid yet calming', cat:'Pastel'},
+      {cls:'seafoam-vortex', name:'Seafoam Vortex', desc:'Seafoam in spinning vortex, both soothing and impossible', cat:'Pastel'}
+    ];
+    // ... rest of your JS remains unchanged ...
+    let favorites = JSON.parse(localStorage.getItem('impossibleFavs') || '[]');
+    function isFav(color) {
+      return favorites.indexOf(color.name) !== -1;
+    }
+    function toggleFav(color) {
+      const i = favorites.indexOf(color.name);
+      if (i === -1) { favorites.push(color.name); }
+      else { favorites.splice(i, 1); }
+      localStorage.setItem('impossibleFavs', JSON.stringify(favorites));
+      updateFavCount();
+      renderFavorites();
+      // Re-render visible grids to update stars
+      ['gridGenerator','gridOpponent','gridHyperbolic','gridComplete'].forEach(gid=>{
+        if(document.getElementById(gid)) renderGrid(gid, getColorsForGrid(gid));
+      });
+    }
+    function updateFavCount() {
+      document.getElementById('favCount').textContent = favorites.length ? '('+favorites.length+')':'';
+    }
+    function renderFavorites() {
+      const favColors = COLORS.filter(c=>favorites.includes(c.name));
+      renderGrid('gridFavorites', favColors);
+    }
+    function copyName(name) {
+      navigator.clipboard.writeText(name);
+    }
+    function makeCard(color) {
+      return `
+        <div class="card" onclick="openFullscreen('${color.cls}', '${color.name.replace(/'/g, "\\'")}', '${color.desc.replace(/'/g, "\\'")}', '${color.cat}')" tabindex="0">
+          <button class="fav-btn${isFav(color)?' faved':''}" title="Favorite" onclick="event.stopPropagation();toggleFav(COLORS[${COLORS.findIndex(c=>c.name===color.name)}]);">
+            ${isFav(color) ? '★' : '☆'}
+          </button>
+          <button class="copy-btn" title="Copy color name" onclick="event.stopPropagation();copyName('${color.name.replace(/'/g, "\\'")}')">Copy</button>
+          <div class="swatch ${color.cls}"></div>
+          <div class="name">${color.name}</div>
+          <div class="desc">${color.desc}</div>
+          <div class="category">${color.cat}</div>
+        </div>
+      `;
+    }
+    function renderGrid(gridId, colorArr) {
+      document.getElementById(gridId).innerHTML = colorArr.map(makeCard).join('');
+    }
+    function getColorsForGrid(gridId) {
+      if (gridId==='gridOpponent') return COLORS.filter(c=>c.cat==='Opponent');
+      if (gridId==='gridHyperbolic') return COLORS.filter(c=>c.cat==='Hyperbolic');
+      if (gridId==='gridComplete') return COLORS;
+      if (gridId==='gridGenerator') return COLORS.slice(0,8); // fallback
+      return [];
+    }
+    function generateRandom() {
+      var shuffled = COLORS.slice().sort(()=>Math.random()-0.5);
+      renderGrid('gridGenerator', shuffled.slice(0,8));
+    }
+    function showOpponents() {
+      renderGrid('gridGenerator', COLORS.filter(c=>c.cat==='Opponent'));
+    }
+    function loadCategory(category, gridId) {
+      renderGrid(gridId, COLORS.filter(c=>c.cat===category));
+    }
+    function loadAllColors() {
+      renderGrid('gridComplete', COLORS);
+    }
+    function showPage(id, evt) {
+      var pages = document.querySelectorAll('.page');
+      pages.forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById(id).classList.add('active');
+      var buttons = document.querySelectorAll('nav .btn');
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      if(evt) evt.target.classList.add('active');
+      if(id==='opponent') loadCategory('Opponent', 'gridOpponent');
+      else if(id==='hyperbolic') loadCategory('Hyperbolic', 'gridHyperbolic');
+      else if(id==='complete') loadAllColors();
+      else if(id==='favorites') renderFavorites();
+    }
+    function openFullscreen(cls, name, desc, cat) {
+      var overlay = document.getElementById('fullscreenOverlay');
+      var color = document.getElementById('fullscreenColor');
+      var title = document.getElementById('fullscreenTitle');
+      var descEl = document.getElementById('fullscreenDesc');
+      var catEl = document.getElementById('fullscreenCategory');
+      color.className = 'fullscreen-color ' + cls;
+      title.textContent = name;
+      descEl.textContent = desc;
+      catEl.textContent = 'Category: ' + cat + ' Color';
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeFullscreen() {
+      document.getElementById('fullscreenOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.keyCode === 27) closeFullscreen();
+    });
+    function surpriseMe() {
+      const c = COLORS[Math.floor(Math.random()*COLORS.length)];
+      openFullscreen(c.cls, c.name, c.desc, c.cat);
+    }
+    generateRandom();
+    updateFavCount();
+  </script>
+</body>
+</html>
