@@ -304,7 +304,6 @@
   </div>
 
   <script>
-    // (same JS as previous version)
     // --- Impossible Colors Expanded ---
     var COLORS = [
       {cls:'stygian-blue', name:'Stygian Blue', desc:'Blue darker than black yet impossibly saturated', cat:'Stygian'},
@@ -361,7 +360,6 @@
       {cls:'pastel-pistachio', name:'Pastel Pistachio', desc:'Soft pistachio green, mathematically vivid yet calming', cat:'Pastel'},
       {cls:'seafoam-vortex', name:'Seafoam Vortex', desc:'Seafoam in spinning vortex, both soothing and impossible', cat:'Pastel'}
     ];
-    // ... rest of your JS remains unchanged ...
     let favorites = JSON.parse(localStorage.getItem('impossibleFavs') || '[]');
     function isFav(color) {
       return favorites.indexOf(color.name) !== -1;

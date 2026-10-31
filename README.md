@@ -1,58 +1,46 @@
-# Impossible Colors – Optical Illusions in CSS/JS
+# Impossible Colors
 
+A single-page gallery of 47 animated color swatches inspired by "impossible colors": colors like reddish green or bluish yellow that the eye's opponent-color system normally can't perceive. It's a creative coding project in plain HTML, CSS and JavaScript, with no build step and no dependencies.
 
-Impossible Colors is a creative coding project demonstrating vivid, forbidden, and mathematically "impossible" colors using CSS animations and original color science techniques.
+A screen can't literally show an impossible color. These swatches use animated CSS gradients, pulsing, glowing and spinning effects to suggest them, and to play with afterimages if you stare at one in fullscreen.
+
+## Try it
+
+Open `impossiblecolorsv2.html` in any modern browser. Either:
+
+- download the file (or clone the repo) and double-click it, or
+- if GitHub Pages is turned on for this repo, visit the Pages URL. `index.html` forwards to the gallery.
+
+## What's in it
+
+| Category | Swatches | Effect |
+| --- | --- | --- |
+| Stygian | 11 | Saturated color glowing out of black |
+| Hyperbolic | 10 | Supersaturated colors in spinning conic gradients |
+| Opponent | 8 | Fine alternating stripes of opponent pairs, such as red and green |
+| Self-Luminous | 7 | Colors that seem to glow brighter than their surroundings |
+| Mathematical | 5 | Playful "colors outside the spectrum", like Hyper Green and Negative Red |
+| Composite | 4 | Paradox swatches, like Chromatic Gray and Vantablack-White |
+| Pastel | 2 | Soft pastel takes, Pastel Pistachio and Seafoam Vortex |
 
 ## Features
 
-- Stygian, hyperbolic, and self-luminous colors
-- Opponent-process colors (reddish green, bluish yellow, etc.)
-- Responsive grid and fullscreen viewing
-- Save your favorites locally
-- Animated CSS gradients for visual illusion
+- **Random Mix:** eight random swatches, reshuffled with Generate Mix
+- **Category pages** for opponent and spinning colors, plus an All Colors page
+- **Fullscreen view:** click any swatch, press Esc to close
+- **Surprise Me:** opens a random color fullscreen
+- **Favorites:** saved in your browser's localStorage
+- **Copy** a color's name to the clipboard
+- Responsive grid that works on phones and desktops
 
-## About the Science
+## The science, briefly
 
-Impossible colors are color perceptions that cannot exist in normal viewing, such as reddish green and bluish yellow. This project visualizes them using optical illusions and animation, inspired by color opponent theory and chimerical colors research.
+Human color vision compares signals in opponent pairs: red against green, blue against yellow, light against dark. That's why a single patch of light normally can't look reddish green. Researchers have produced "chimerical" colors by fatiguing the eye with one color and then showing another, so the afterimage combines with what you see. This project is an artistic riff on those ideas, not a scientific demonstration.
 
-## How to Use
+## Built with
 
-1. save impossiblecolorsv2.html 
-2. Open `impossiblecolorsv2.html` in your browser.
-3. Click around to discover impossible colors and illusions.
-4. Favorite, copy names, enjoy fullscreen mode!
-
-## Technologies
-
-- HTML5 / CSS3 (animated gradients)
-- JavaScript (UI logic, localStorage)
-
+HTML5, CSS3 (radial and conic gradients, keyframe animations) and vanilla JavaScript.
 
 ## License
 
-MIT License
-
-Copyright (c) 2025 PTisAI
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-## Credits
-
-Created by PTxxDxxd and PTisAI
+MIT. See [license](license).
