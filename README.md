@@ -17,11 +17,11 @@ Open `impossiblecolorsv2.html` in any modern browser. Either:
 | --- | --- | --- |
 | Stygian | 11 | Saturated color glowing out of black |
 | Hyperbolic | 10 | Supersaturated colors in spinning conic gradients |
-| Opponent | 8 | Alternating opponent pairs such as red and green |
+| Opponent | 8 | Fine alternating stripes of opponent pairs, such as red and green |
 | Self-Luminous | 7 | Colors that seem to glow brighter than their surroundings |
-| Mathematical | 5 | Pattern-based mixes |
-| Composite | 4 | Combinations of the effects above |
-| Pastel | 2 | Soft, low-contrast variations |
+| Mathematical | 5 | Playful "colors outside the spectrum", like Hyper Green and Negative Red |
+| Composite | 4 | Paradox swatches, like Chromatic Gray and Vantablack-White |
+| Pastel | 2 | Soft pastel takes, Pastel Pistachio and Seafoam Vortex |
 
 ## Features
 
